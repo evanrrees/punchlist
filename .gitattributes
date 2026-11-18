@@ -1,0 +1,11 @@
+# Normalize line endings; let git decide what is text.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# Collapse lockfiles in diffs and GitHub's language stats.
+uv.lock linguist-generated=true -diff

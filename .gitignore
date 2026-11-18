@@ -1,0 +1,40 @@
+# Default-deny: ignore everything, then include by name. A new top-level file or directory stays untracked
+# until it is listed here. (Later patterns win, so the exclusions at the bottom beat the includes.)
+*
+
+# --- included
+!.gitignore
+!.gitattributes
+!.editorconfig
+!.pre-commit-config.yaml
+!.yamllint.yaml
+!biome.json
+!AGENTS.md
+!README.md
+!/.github/
+!/.github/**
+
+# --- never, even inside an included directory: secrets and generated files
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+certs/
+**/certs/
+.venv/
+**/.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+node_modules/
+**/node_modules/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+.DS_Store

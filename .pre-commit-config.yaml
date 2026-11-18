@@ -1,0 +1,82 @@
+# Hooks run on staged files only, so they stay fast. Update pins with `uvx pre-commit autoupdate`.
+# Run everything: `uvx pre-commit run --all-files`. Skip one hook once: `SKIP=ty git commit ...`.
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit]
+# Go (gitleaks/shfmt/actionlint) and Node (biome) hooks use the toolchain on PATH (mise locally, preinstalled on
+# GitHub runners) instead of letting pre-commit download its own.
+default_language_version:
+  golang: system
+  node: system
+
+repos:
+  # --- hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+
+  # --- secrets
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  # --- spelling (low false-positive rate; add exceptions under [tool.typos] in pyproject.toml)
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.51.1
+    hooks:
+      - id: typos
+        # Report only: the hook's default --write-changes silently "fixes" identifiers, hostnames and log text.
+        args: [--force-exclude]
+
+  # --- js/ts/json/css (rules in biome.json)
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.6.1
+    hooks:
+      - id: biome-check
+        # autoupdate doesn't bump this pin: check `npm view @biomejs/biome version` and keep biome.json's $schema in step
+        additional_dependencies: ["@biomejs/biome@2.6.4"]
+
+  # --- shell
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1-1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.14.1-1
+    hooks:
+      - id: shfmt
+
+  # --- yaml, docker, CI
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+  - repo: https://github.com/AleksaC/hadolint-py
+    rev: v2.15.1
+    hooks:
+      - id: hadolint
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.31.1
+    hooks:
+      - id: zizmor

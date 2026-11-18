@@ -1,0 +1,11 @@
+# Relaxed: catch real mistakes (duplicate keys, bad indentation, truthy typos), not style nits.
+extends: default
+
+rules:
+  line-length: {max: 120, level: warning}
+  document-start: disable
+  comments: {min-spaces-from-content: 1}
+  comments-indentation: disable
+  truthy: {allowed-values: ["true", "false", "on"], check-keys: false}
+  braces: {max-spaces-inside: 1}
+  brackets: {max-spaces-inside: 1}
