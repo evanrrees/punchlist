@@ -1,0 +1,5 @@
+{
+  "name": "punchlist",
+  "owner": { "name": "evanrrees" },
+  "plugins": [{ "name": "punchlist", "source": "./" }]
+}
