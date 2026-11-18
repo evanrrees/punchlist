@@ -1,0 +1,6 @@
+{
+  "name": "punchlist",
+  "version": "0.1.0",
+  "description": "A pane of the steps Claude asked you to do and the questions it is waiting on: mark done, answer, or ask about one.",
+  "types": "./types/index.d.ts"
+}

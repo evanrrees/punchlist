@@ -13,6 +13,13 @@
 !README.md
 !/.github/
 !/.github/**
+!tsconfig.json
+!/.claude-plugin/
+!/.claude-plugin/**
+!/hooks/
+!/hooks/**
+!/types/
+!/types/**
 
 # --- never, even inside an included directory: secrets and generated files
 .env
@@ -38,3 +45,5 @@ htmlcov/
 dist/
 build/
 .DS_Store
+# written by Claude Code at each load
+/.claude-plugin/types/
