@@ -1,19 +1,21 @@
 # AGENTS.md: punchlist
 
-<!-- One paragraph: what this repo is, and what to read first. -->
+A Claude Code mod (function-hooks plugin): a pane of user-facing steps and questions, a `track` tool the model calls to
+manage them, and a `/punchlist` command. Read `hooks/register.tsx` first; `types/index.d.ts` is its `$.state` contract.
 
 ## Commands
 
-- Setup: `uv sync`, then `uvx pre-commit install` (installs the pre-commit and pre-push hooks).
-- All checks: `uvx pre-commit run --all-files`. Tests: `uv run pytest` (`--cov` for coverage).
-- Add a dependency with `uv add <pkg>` (`uv add --dev <pkg>` for tooling); never edit `uv.lock` by hand.
+- Hooks: `uvx pre-commit install`; all checks: `uvx pre-commit run --all-files`.
+- `claude plugin validate .` (also type-checks) and `claude plugin test .`.
+- Try it: `claude --plugin-dir .`.
 
 ## Conventions
 
-- Python is managed by uv (`.python-version`); don't use system pip or create venvs by hand.
-- Python lint and type rules live in `pyproject.toml` (ruff `ALL` minus a short ignore list; ty with every rule as an
-  error); JS/TS/JSON/CSS rules in `biome.json`. Fix the code rather than adding `# noqa` / `# ty: ignore` / `biome-ignore`; when an ignore is really needed, give the specific code and a reason.
-- `.gitignore` is default-deny: a new top-level file or directory stays untracked until you add `!name` (and `!/dir/**`)
-  for it. Exclusions go after the includes (later patterns win).
-- Don't bypass hooks with `--no-verify`. If a hook is wrong, fix its config.
-- Commit small, with a body that says why. Push only when asked.
+- Bump the atom's `shape` tag in `register.tsx` when `Item`'s fields change; stored values outlive reloads.
+- JS/TS/JSON rules live in `biome.json`. Fix the code rather than adding `biome-ignore`.
+- `.claude-plugin/types/` is generated and stays ignored.
+
+## Shared rules
+
+Tooling, conventions, git, secrets, homelab and testing rules shared by every repo:
+`~/Developer/agent-home/docs/shared-rules.md`. The map of all repos: `~/Developer/agent-home/AGENTS.md`.
