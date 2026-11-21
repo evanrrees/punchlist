@@ -13,6 +13,9 @@ manage them, and a `/punchlist` command. Read `hooks/register.tsx` first; `types
 
 - Bump the atom's `shape` tag in `register.tsx` when `Item`'s fields change; stored values outlive reloads.
 - JS/TS/JSON rules live in `biome.json`. Fix the code rather than adding `biome-ignore`.
-- `.gitignore` is default-deny: a new top-level file or directory stays untracked until you add `!name` (and `!/dir/**`)
-  for it. `.claude-plugin/types/` is generated and stays ignored.
-- Don't bypass hooks with `--no-verify`. Commit small, with a body that says why. Push only when asked.
+- `.claude-plugin/types/` is generated and stays ignored.
+
+## Shared rules
+
+Tooling, conventions, git, secrets, homelab and testing rules shared by every repo:
+`~/Developer/agent-home/docs/shared-rules.md`. The map of all repos: `~/Developer/agent-home/AGENTS.md`.
