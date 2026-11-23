@@ -24,9 +24,9 @@ test("Claude adds items; the person marks one done", async ($, on) => {
   on("ui.open", () => ({ value: { isPlaced: true } }));
   on("session.start", (_, e) => ({ cwd: e.cwd }));
   const notes: string[] = [];
-  on("session.append", (_, e, next) => {
-    notes.push(JSON.stringify(e.message.content));
-    return next(e);
+  on("prompt.submit", (_, e) => {
+    notes.push(e.text);
+    return { text: e.text };
   });
 
   await $.session.start({
@@ -67,6 +67,10 @@ test("Claude adds items; the person marks one done", async ($, on) => {
   await ui.press({ key: "row-S1" });
   await ui.press({ key: "done-S1" });
   expect(notes.join()).toContain("marked S1");
+
+  await ui.press({ key: "row-Q1" });
+  await ui.press({ key: "drop-Q1" });
+  expect(notes.join()).toContain("dropped Q1");
   expect(await ui.find({ type: "Text", text: /✓ S1/ })).toBeTruthy();
   await ui.unmount();
 });
