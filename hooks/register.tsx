@@ -51,7 +51,7 @@ Each item must make sense read alone, days later, in another session:
 
 When you mention an item in chat later, write its id AND a short restatement: "S4 (flash the second Atom over USB)", never a bare "step 4".
 
-Close items with close[] when the user says they did them or you can see they're done (status done), when the user answered in chat (status answered, with the answer), or when they no longer apply (status dropped). Items the user closes in the pane reach you as notes; answers they type in the pane arrive as their prompt, prefixed "Re Q<n>".
+Close items with close[] when the user says they did them or you can see they're done (status done), when the user answered in chat (status answered, with the answer), or when they no longer apply (status dropped). Items the user marks done or drops in the pane reach you as a message from the punchlist plugin, which starts a turn: acknowledge it briefly and carry on with whatever the item unblocks; answers they type in the pane arrive as their prompt, prefixed "Re Q<n>".
 
 The result lists every open item.`;
 
@@ -152,13 +152,9 @@ const describeOpen = (list: Item[], me: string | null) => {
     .join("\n");
 };
 
+/** Tell Claude about a close made in the pane: a framed plugin prompt, so it starts a turn once the session is idle. */
 const note = ($: $, text: string) =>
-  $.session.append({
-    message: {
-      type: "user",
-      content: [{ type: "text", text: `[punchlist] ${text}` }],
-    },
-  });
+  $.prompt.submit({ text: `[punchlist] ${text}` });
 
 const closeByUser = async (
   $: $,
