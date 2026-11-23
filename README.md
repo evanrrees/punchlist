@@ -9,8 +9,8 @@ so they don't get buried in the transcript.
   **drop** (`x`). A question gets an answer field; Enter sends `Re Q2 ("…"): <answer>` as your prompt.
 - Marking an item done or dropping it in the pane sends Claude a message from the plugin, which starts a turn (once
   any running turn ends), so Claude hears about it right away instead of on your next prompt.
-- The list is kept per project directory across sessions. Open items left by earlier sessions are added to Claude's
-  system prompt at the start of a new one, so it knows what `S4` meant. Closed items are kept for 14 days.
+- The list is kept per project directory across sessions. Open items left by earlier sessions are handed to Claude
+  at the start of a new one (and again after `/clear` or compaction), so it knows what `S4` meant. Closed items are kept for 14 days.
 - `/punchlist` opens the pane. It also opens itself when Claude adds an item (on wide terminals).
 
 ## Install

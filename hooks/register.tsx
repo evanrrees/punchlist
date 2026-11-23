@@ -218,22 +218,22 @@ export const register: Register = (on) => {
     return { text: `Punchlist opened: ${openCount(list)} open.` };
   });
 
-  // Items left open by earlier sessions in this directory, so Claude knows what they mean.
-  on("prompt.compose", async ($, e, next) => {
+  // Items left open by earlier sessions in this directory, so Claude knows what they mean. Handed over as
+  // SessionStart context rather than a prompt.compose section: a built-in mod seated above every plugin can end the
+  // prompt.compose chain before it reaches this one. SessionStart also fires after /clear and compaction, so the note
+  // comes back whenever the context is rebuilt.
+  on("classic.SessionStart", async ($, e, next) => {
     const out = await next(e);
-    const me = await read($, sessionId);
+    const me = await $.session.id();
     const carried = (await loadStored($)).filter(
       (i) => i.status === "open" && i.session !== me,
     );
     if (!carried.length) return out;
     return {
-      sections: [
-        ...out.sections,
-        {
-          id: "punchlist:carryover",
-          scope: "session" as const,
-          text: `# Punchlist carried over\nThe user's punchlist pane still holds these open items from earlier sessions in this directory (mcp__punchlist__track manages them; refer to them by id plus restatement):\n${describeOpen(carried, me)}`,
-        },
+      ...out,
+      additionalContext: [
+        ...(out.additionalContext ?? []),
+        `# Punchlist carried over\nThe user's punchlist pane still holds these open items from earlier sessions in this directory (mcp__punchlist__track manages them; refer to them by id plus restatement):\n${describeOpen(carried, me)}`,
       ],
     };
   });
