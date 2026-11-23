@@ -27,6 +27,8 @@ declare module "claude-code" {
       items: Shaped<Item[]>;
       selected: string | null;
       session: string | null;
+      /** The directory the list is kept under: the session's directory when it started, not wherever it has cd'd since. */
+      root: string | null;
     };
   }
 }
