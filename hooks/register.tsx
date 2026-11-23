@@ -24,6 +24,10 @@ const sessionId = atom(
   { plugin: "punchlist", key: "session" } as const,
   null as string | null,
 );
+const root = atom(
+  { plugin: "punchlist", key: "root" } as const,
+  null as string | null,
+);
 
 type $ = EngineInterface;
 
@@ -98,8 +102,12 @@ const INPUT_SCHEMA = {
   },
 };
 
-const storeKey = async ($: $) => `items:${await $.session.cwd()}`;
-const counterKey = async ($: $) => `counter:${await $.session.cwd()}`;
+// Key the list by the directory the session started in. $.session.cwd() follows every cd, which split one
+// session's list across a key per directory it visited.
+const project = async ($: $) =>
+  (await read($, root)) ?? (await $.session.cwd());
+const storeKey = async ($: $) => `items:${await project($)}`;
+const counterKey = async ($: $) => `counter:${await project($)}`;
 
 const loadStored = async ($: $): Promise<Item[]> => {
   const v = await $.store.get(await storeKey($));
@@ -191,6 +199,8 @@ export const register: Register = (on) => {
     });
     const id = await $.session.id();
     await update($, sessionId, () => id);
+    // Set once: a reload runs session.start again, by then possibly in another directory; $.state keeps the first.
+    await update($, root, (r) => r ?? e.cwd);
 
     const cutoff = (await $.clock.now()) - KEEP_CLOSED_DAYS * 86_400_000;
     const list = await mutate($, (l) =>

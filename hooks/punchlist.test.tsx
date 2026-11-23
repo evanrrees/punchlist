@@ -74,3 +74,36 @@ test("Claude adds items; the person marks one done", async ($, on) => {
   expect(await ui.find({ type: "Text", text: /✓ S1/ })).toBeTruthy();
   await ui.unmount();
 });
+
+test("the list stays with the starting directory when the session cds", async ($, on) => {
+  mock.store(on);
+  mock.clock(on);
+  let cwd = "/proj";
+  on("session.id", () => ({ value: "sess-1" }));
+  on("session.cwd", () => ({ value: cwd }));
+  on("command.register", () => ({ value: { command: "punchlist" } }));
+  on("tool.register", () => ({ value: { tool: "mcp__punchlist__track" } }));
+  on("ui.open", () => ({ value: { isPlaced: true } }));
+  on("session.start", (_, e) => ({ cwd: e.cwd }));
+  const run = (i: unknown) =>
+    ($.tool as unknown as { run: (i: unknown) => Promise<unknown> }).run(i);
+
+  await $.session.start({ cwd, surface: "terminal", isInteractive: true });
+  await run({
+    tool: "mcp__punchlist__track",
+    add: [{ kind: "step", text: "First step" }],
+    tool_use_id: "t1",
+  });
+  cwd = "/proj/sub";
+  // A reload runs session.start again from the new directory.
+  await $.session.start({ cwd, surface: "terminal", isInteractive: true });
+  const res = JSON.stringify(
+    await run({
+      tool: "mcp__punchlist__track",
+      add: [{ kind: "step", text: "Second step" }],
+      tool_use_id: "t2",
+    }),
+  );
+  expect(res).toContain("Added S2");
+  expect(res).toContain("First step");
+});
